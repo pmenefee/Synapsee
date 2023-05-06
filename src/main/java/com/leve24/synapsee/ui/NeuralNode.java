@@ -1,0 +1,71 @@
+package com.leve24.synapsee.ui;
+
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
+import javafx.scene.Node;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+
+import java.util.List;
+
+public class NeuralNode extends Region {
+
+    private Rectangle currentShape;
+    private double originalMouseX;
+    private double originalMouseY;
+    private double originalWidth;
+    private double originalHeight;
+
+    public NeuralNode(){
+        Rectangle rect = new Rectangle(50, 50, 100, 100);
+        rect.setFill(Color.GRAY);
+        rect.setOnMouseClicked(event -> setCurrentShape(new ResizableShape(rect)));
+
+        this.originalMouseX = 0;
+        this.originalMouseY = 0;
+        this.originalWidth = getBoundsInParent().getWidth();
+        this.originalHeight = getBoundsInParent().getHeight();
+
+        rect.setOnMouseDragged(event -> {
+            if (currentShape != null) {
+                double deltaX = event.getX() - getOriginalMouseX();
+                double deltaY = event.getY() - getOriginalMouseY();
+                currentShape.resize(deltaX, deltaY);
+            }
+        });
+
+        currentShape = rect;
+    }
+
+    public Rectangle GetNode(){
+        return currentShape;
+    }
+
+    private void setCurrentShape(ResizableShape resizableShape) {
+
+        if (currentShape != null) {
+            unhighlight();
+        }
+
+        highlight();
+    }
+
+    private void unhighlight() {
+        currentShape.setStroke(null);
+    }
+
+    public void highlight() {
+        currentShape.setStroke(Color.BLACK);
+        currentShape.setStrokeWidth(2);
+    }
+
+    public double getOriginalMouseX() {
+        return originalMouseX;
+    }
+
+    public double getOriginalMouseY() {
+        return originalMouseY;
+    }
+}
