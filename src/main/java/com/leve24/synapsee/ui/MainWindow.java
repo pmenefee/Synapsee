@@ -3,11 +3,15 @@ package com.leve24.synapsee.ui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import com.leve24.synapsee.util.Configuration;
@@ -22,12 +26,15 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Configuration configuration = new Configuration();
 
+        Configuration configuration = new Configuration();
         BorderPane border = new BorderPane();
+        Scene scene = new Scene(border, configuration.GetMainWindowWidth(), configuration.GetMainWindowHeight());
+        SetTheme(scene);
+
         // TOP
         HBox hb_top = new HBox();
-        hb_top.getChildren().add(MainMenu());
+        hb_top.getChildren().add(MainMenu.GetMenuBar(stage));
         border.setTop(hb_top);
 
         // LEFT
@@ -40,12 +47,12 @@ public class MainWindow extends Application {
         // RIGHT
 
         // CENTER
+
         border.setCenter(ViewPort());
 
         _stage = stage;
         _stage.setTitle("Ketle");
-        Scene scene = new Scene(border, configuration.GetMainWindowWidth(), configuration.GetMainWindowHeight());
-        SetTheme(scene);
+
         _stage.setScene(scene);
         _stage.show();
     }
@@ -61,34 +68,6 @@ public class MainWindow extends Application {
         }
     }
 
-    /**
-     * @return MenuBar
-     */
-    private MenuBar MainMenu(){
-        Menu m_root = SetLabel("File");
-
-        // Add New
-        Menu m_New = SetLabel("New");
-
-        // Project...
-        MenuItem mi_NewProject= new MenuItem("Project...");
-        mi_NewProject.setAccelerator(KeyCombination.keyCombination("shortcut+P"));
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            {
-                System.out.println("Clicked");
-            }
-        };
-        mi_NewProject.setOnAction(event);
-        m_New.getItems().add(mi_NewProject);
-
-        m_root.getItems().add(m_New);
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(m_root);
-        return menuBar;
-    }
-
     private TreeView ProjectsTree(){
         TreeView tv_projects = new TreeView();
         TreeItem ti_project = new TreeItem("Project");
@@ -100,9 +79,7 @@ public class MainWindow extends Application {
     private TabPane ViewPort(){
 
         TabPane tp_stage = new TabPane();
-        tp_stage.setPrefWidth(500);
-        tp_stage.setMinHeight(500);
-        Tab t_viewport = new Tab("Stage");
+        Tab t_viewport = new Tab("ViewPort");
         ViewPortPane p_viewport = new ViewPortPane();
         p_viewport.setStyle("-fx-background-color: #FFFFFF");
         t_viewport.setContent(p_viewport);
@@ -111,13 +88,5 @@ public class MainWindow extends Application {
         return tp_stage;
     }
 
-    /// Sets the text for the menu.
-    /// This allows the text color to be managed by css.
-    private Menu SetLabel(String s){
-        Menu m = new Menu();
-        Label l = new Label(s);
-        l.setId("label");
-        m.setGraphic(l);
-        return m;
-    }
+
 };
